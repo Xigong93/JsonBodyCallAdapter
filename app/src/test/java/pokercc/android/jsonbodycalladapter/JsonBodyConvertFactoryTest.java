@@ -14,20 +14,29 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Query;
 
 public class JsonBodyConvertFactoryTest {
     private interface LoginService {
-        @JsonBodyConvertFactory.JsonBodyEncoded
-//        @FormUrlEncoded
+        @JsonBodyEncoded
         @POST("/login")
         @Multipart
         Call<ResponseBody> login(
                 @Part("username") String username,
                 @Part("password") String password
         );
+
+        @GET("/")
+        Call<ResponseBody> sampleGet(
+                @Query("username") String username,
+                @Query("password") String password
+        );
+
+
     }
 
     private LoginService loginService;
@@ -49,7 +58,7 @@ public class JsonBodyConvertFactoryTest {
                 .baseUrl(server.url("/"))
                 .callFactory(new OkHttpClient.Builder()
                         .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(8888)))
-                        .addInterceptor(new JsonBodyConvertFactory.JsonBodyInterceptor())
+                        .addInterceptor(new JsonBodyInterceptor())
                         .build())
 
                 .build()
@@ -69,6 +78,13 @@ public class JsonBodyConvertFactoryTest {
         Call<ResponseBody> call = loginService.login("pokercc", "123456");
         String result = call.execute().body().string();
 //        String result = responseBody.string();
+        System.out.println("result:" + result);
+
+    }
+    @Test
+    public void testSampleGet() throws IOException {
+        Call<ResponseBody> call = loginService.sampleGet("pokercc", "123456");
+        String result = call.execute().body().string();
         System.out.println("result:" + result);
 
     }
