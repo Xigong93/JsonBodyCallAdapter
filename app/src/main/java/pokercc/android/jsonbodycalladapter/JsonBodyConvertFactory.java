@@ -23,9 +23,9 @@ public final class JsonBodyConvertFactory extends Converter.Factory {
 
     @Override
     public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-        if (type != String.class) {
-            return null;
-        }
+//        if (type != String.class) {
+//            return null;
+//        }
         for (Annotation annotation : methodAnnotations) {
             if (annotation instanceof JsonBodyEncoded) {
 
@@ -39,11 +39,11 @@ public final class JsonBodyConvertFactory extends Converter.Factory {
                 if (finalKey == null || finalKey.isEmpty()) {
                     return null;
                 }
-                return new Converter<String, RequestBody>() {
+                return new Converter<Object, RequestBody>() {
 
                     @Override
-                    public RequestBody convert(String value) throws IOException {
-                        return new JsonPartRequestBody(finalKey, value);
+                    public RequestBody convert(Object value) throws IOException {
+                        return new JsonPartRequestBody(finalKey, value == null ? null : value.toString());
                     }
                 };
             }
@@ -53,7 +53,7 @@ public final class JsonBodyConvertFactory extends Converter.Factory {
 
     }
 
-     static final class JsonPartRequestBody extends RequestBody {
+    static final class JsonPartRequestBody extends RequestBody {
         private static final MediaType MEDIA_TYPE = MediaType.get("application/json; charset=UTF-8; jsonBody=true");
 
 

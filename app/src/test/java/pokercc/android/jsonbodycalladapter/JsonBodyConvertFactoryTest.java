@@ -27,7 +27,7 @@ public class JsonBodyConvertFactoryTest {
         @Multipart
         Call<ResponseBody> login(
                 @Part("username") String username,
-                @Part("password") String password
+                @Part("password") int password
         );
 
         @GET("/")
@@ -75,7 +75,7 @@ public class JsonBodyConvertFactoryTest {
 
     @Test
     public void testIfWork() throws IOException {
-        Call<ResponseBody> call = loginService.login("pokercc", "123456");
+        Call<ResponseBody> call = loginService.login("pokercc", 123456);
         String result = call.execute().body().string();
 //        String result = responseBody.string();
         System.out.println("result:" + result);
