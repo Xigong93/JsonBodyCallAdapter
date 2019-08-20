@@ -40,7 +40,6 @@ public final class JsonBodyInterceptor implements Interceptor {
             if (jsonObject != null) {
                 return chain.proceed(request.newBuilder()
                         .method(request.method(), new JsonRequestBody(jsonObject))
-                        .removeHeader("Transfer-Encoding")// 去掉分片传输协议头
                         .build());
             }
         }
